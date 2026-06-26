@@ -1,0 +1,88 @@
+.project-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.project-name {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.project-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+}
+
+.project-status.status-on-track {
+    background: #d4edda;
+    color: #155724;
+}
+
+.project-status.status-at-risk {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.project-status.status-blocked {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-fill.status-on-track {
+    background: #28a745;
+}
+
+.progress-fill.status-at-risk {
+    background: #ffc107;
+}
+
+.progress-fill.status-blocked {
+    background: #dc3545;
+}
+
+.progress-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #495057;
+    min-width: 35px;
+}
+
+.project-lead {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+}

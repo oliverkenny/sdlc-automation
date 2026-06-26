@@ -5,6 +5,16 @@
 
 <h1>Dashboard</h1>
 
+<section class="projects-section">
+    <h2>Projects</h2>
+    <div class="projects-grid">
+        @foreach (var project in _projects)
+        {
+            <ProjectCard Project="@project" />
+        }
+    </div>
+</section>
+
 <section class="team-section">
     <h2>Team Members</h2>
     <div class="team-grid">
@@ -19,10 +29,15 @@
     [Inject]
     private ITeamMemberService TeamMemberService { get; set; } = default!;
 
+    [Inject]
+    private IProjectService ProjectService { get; set; } = default!;
+
     private List<Models.TeamMember> _members = new();
+    private List<Models.Project> _projects = new();
 
     protected override void OnInitialized()
     {
         _members = TeamMemberService.GetAllMembers();
+        _projects = ProjectService.GetAllProjects();
     }
 }

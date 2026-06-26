@@ -1,0 +1,28 @@
+@using TeamDashboard.Models
+
+<div class="project-card">
+    <div class="project-header">
+        <h5 class="project-name">@Project.Name</h5>
+        <span class="project-status @GetStatusClass()">@Project.Status</span>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill @GetStatusClass()" style="width: @(Project.ProgressPercentage)%"></div>
+        </div>
+        <span class="progress-text">@(Project.ProgressPercentage)%</span>
+    </div>
+    <p class="project-lead">Lead: @Project.ProjectLead</p>
+</div>
+
+@code {
+    [Parameter]
+    public Project Project { get; set; } = default!;
+
+    private string GetStatusClass() => Project.Status switch
+    {
+        "On Track" => "status-on-track",
+        "At Risk" => "status-at-risk",
+        "Blocked" => "status-blocked",
+        _ => "status-on-track"
+    };
+}

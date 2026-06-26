@@ -9,10 +9,16 @@ namespace TeamDashboard.Tests;
 
 public class HomePageTests : TestContext
 {
+    private void RegisterServices()
+    {
+        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
+        Services.AddSingleton<IProjectService, ProjectService>();
+    }
+
     [Fact]
     public void HomePage_DisplaysAllTeamMembers()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -23,7 +29,7 @@ public class HomePageTests : TestContext
     [Fact]
     public void HomePage_DisplaysMemberNames()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -37,7 +43,7 @@ public class HomePageTests : TestContext
     [Fact]
     public void HomePage_DisplaysMemberRoles()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -50,7 +56,7 @@ public class HomePageTests : TestContext
     [Fact]
     public void HomePage_HasResponsiveGrid()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
