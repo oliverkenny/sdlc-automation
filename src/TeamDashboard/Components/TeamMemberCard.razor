@@ -1,0 +1,29 @@
+@using TeamDashboard.Models
+
+<div class="team-card">
+    <div class="card-avatar">
+        <span>@Member.Initials</span>
+    </div>
+    <div class="card-info">
+        <h5 class="card-name">@Member.Name</h5>
+        <p class="card-role">@Member.Role</p>
+    </div>
+    <div class="card-status">
+        <span class="status-indicator @GetStatusClass()"></span>
+        <span class="status-text">@Member.Status</span>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public TeamMember Member { get; set; } = default!;
+
+    private string GetStatusClass() => Member.Status switch
+    {
+        "Available" => "status-available",
+        "In Meeting" => "status-meeting",
+        "Focussing" => "status-focussing",
+        "Away" => "status-away",
+        _ => "status-away"
+    };
+}
