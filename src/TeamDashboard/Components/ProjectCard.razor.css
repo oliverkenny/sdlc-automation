@@ -1,8 +1,10 @@
 .project-card {
+    box-sizing: border-box;
     background: white;
     border-radius: 12px;
     padding: 1.25rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-width: 100%;
 }
 
 .project-header {
@@ -85,4 +87,32 @@
     margin: 0;
     font-size: 0.8rem;
     color: #6c757d;
+}
+
+@media (max-width: 767.98px) {
+    .project-card {
+        padding: 1rem;
+    }
+
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .project-name {
+        font-size: 1rem;
+    }
+
+    .project-status {
+        font-size: 0.875rem;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .progress-text,
+    .project-lead {
+        font-size: 0.95rem;
+    }
 }
