@@ -28,6 +28,7 @@ public class HomePageTests : TestContext
         };
         Services.AddSingleton<ITeamMemberService>(new FakeTeamMemberService(members));
         Services.AddSingleton<IProjectService>(new FakeProjectService(projects));
+        Services.AddSingleton<IToastService>(new FakeToastService());
     }
 
     [Fact]
@@ -78,4 +79,5 @@ public class HomePageTests : TestContext
         var grid = cut.Find(".team-grid");
         Assert.NotNull(grid);
     }
+
 }

@@ -35,3 +35,35 @@ public class FakeProjectService : IProjectService
 
     public Task<List<Project>> GetAllProjectsAsync() => Task.FromResult(_projects);
 }
+
+public class FakeToastService : IToastService
+{
+    private readonly List<Toast> _toasts = [];
+
+    public event Action? OnChange;
+
+    public IReadOnlyList<Toast> Toasts => _toasts.AsReadOnly();
+
+    public void Show(string message, string type = "info")
+    {
+        _toasts.Add(new Toast
+        {
+            Message = message,
+            Type = type,
+            IsVisible = true
+        });
+        OnChange?.Invoke();
+    }
+
+    public void Dismiss(Guid id)
+    {
+        var toast = _toasts.FirstOrDefault(item => item.Id == id);
+        if (toast is null)
+        {
+            return;
+        }
+
+        _toasts.Remove(toast);
+        OnChange?.Invoke();
+    }
+}
