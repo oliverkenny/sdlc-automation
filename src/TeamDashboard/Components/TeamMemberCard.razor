@@ -6,7 +6,7 @@
     </div>
     <div class="card-info">
         <h5 class="card-name">@Member.Name</h5>
-        <p class="card-role">@Member.Role</p>
+        <p class="card-role">@(string.IsNullOrWhiteSpace(Member.Role) ? "No role assigned" : Member.Role)</p>
     </div>
     <div class="card-status">
         <span class="status-indicator @GetStatusClass()"></span>
