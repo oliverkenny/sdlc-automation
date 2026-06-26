@@ -25,7 +25,8 @@ infrastructure/.terraform/
 infrastructure/*.tfstate
 infrastructure/*.tfstate.backup
 infrastructure/*.tfplan
-infrastructure/.terraform.lock.hcl
+infrastructure/*.tfvars
+infrastructure/*.tfvars.json
 
 ## OS
 .DS_Store
