@@ -5,6 +5,7 @@ namespace TeamDashboard.Services;
 public interface ITeamMemberService
 {
     List<TeamMember> GetAllMembers();
+    void UpdateStatus(int id, string status);
 }
 
 public class TeamMemberService : ITeamMemberService
@@ -19,4 +20,13 @@ public class TeamMemberService : ITeamMemberService
     };
 
     public List<TeamMember> GetAllMembers() => _members;
+
+    public void UpdateStatus(int id, string status)
+    {
+        var member = _members.FirstOrDefault(m => m.Id == id);
+        if (member is not null)
+        {
+            member.Status = status;
+        }
+    }
 }

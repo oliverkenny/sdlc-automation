@@ -73,7 +73,18 @@
     background-color: #6c757d;
 }
 
-.status-text {
+.status-select {
     font-size: 0.8rem;
-    color: #6c757d;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.2rem 0.4rem;
+    background: white;
+    cursor: pointer;
+    outline: none;
+}
+
+.status-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }

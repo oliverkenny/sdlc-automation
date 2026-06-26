@@ -20,7 +20,7 @@
     <div class="team-grid">
         @foreach (var member in _members)
         {
-            <TeamMemberCard Member="@member" />
+            <TeamMemberCard Member="@member" OnStatusChange="@(status => OnMemberStatusChanged(member.Id, status))" />
         }
     </div>
 </section>
@@ -39,5 +39,10 @@
     {
         _members = TeamMemberService.GetAllMembers();
         _projects = ProjectService.GetAllProjects();
+    }
+
+    private void OnMemberStatusChanged(int memberId, string newStatus)
+    {
+        TeamMemberService.UpdateStatus(memberId, newStatus);
     }
 }
