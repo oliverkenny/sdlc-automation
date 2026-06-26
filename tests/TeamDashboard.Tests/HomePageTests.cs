@@ -11,8 +11,23 @@ public class HomePageTests : TestContext
 {
     private void RegisterServices()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
-        Services.AddSingleton<IProjectService, ProjectService>();
+        var members = new List<TeamMember>
+        {
+            new() { Id = 1, Name = "Alice Johnson", Role = "Tech Lead", Status = "Available" },
+            new() { Id = 2, Name = "Bob Smith", Role = "Senior Developer", Status = "In Meeting" },
+            new() { Id = 3, Name = "Carol Williams", Role = "UX Designer", Status = "Focussing" },
+            new() { Id = 4, Name = "David Brown", Role = "Backend Developer", Status = "Available" },
+            new() { Id = 5, Name = "Eva Martinez", Role = "QA Engineer", Status = "Away" }
+        };
+        var projects = new List<Project>
+        {
+            new() { Id = 1, Name = "Customer Portal Redesign", Status = "On Track", ProgressPercentage = 72, ProjectLead = "Alice Johnson" },
+            new() { Id = 2, Name = "API Migration v3", Status = "At Risk", ProgressPercentage = 45, ProjectLead = "David Brown" },
+            new() { Id = 3, Name = "Mobile App Launch", Status = "On Track", ProgressPercentage = 88, ProjectLead = "Bob Smith" },
+            new() { Id = 4, Name = "Data Pipeline Refactor", Status = "Blocked", ProgressPercentage = 20, ProjectLead = "Eva Martinez" }
+        };
+        Services.AddSingleton<ITeamMemberService>(new FakeTeamMemberService(members));
+        Services.AddSingleton<IProjectService>(new FakeProjectService(projects));
     }
 
     [Fact]
