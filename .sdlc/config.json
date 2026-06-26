@@ -1,0 +1,40 @@
+{
+  "project": {
+    "name": "Team Dashboard",
+    "description": "A team dashboard application showing member cards, project progress, and real-time status indicators"
+  },
+  "backlog": {
+    "provider": "github-issues",
+    "repo": "oliverkenny/sdlc-automation"
+  },
+  "repository": {
+    "provider": "github",
+    "repo": "oliverkenny/sdlc-automation",
+    "mainBranch": "main",
+    "branchPrefix": "feature"
+  },
+  "stack": {
+    "language": "csharp",
+    "framework": "blazor-wasm",
+    "testFramework": "xunit-bunit",
+    "buildCommand": "dotnet publish src/TeamDashboard/TeamDashboard.csproj -c Release -o publish",
+    "testCommand": "dotnet test"
+  },
+  "deployment": {
+    "provider": "cloudflare-pages",
+    "projectName": "team-dashboard",
+    "buildOutputPath": "publish/wwwroot",
+    "productionBranch": "main",
+    "credentials": {
+      "accountId": "env:CLOUDFLARE_ACCOUNT_ID",
+      "apiToken": "env:CLOUDFLARE_API_TOKEN"
+    }
+  },
+  "cicd": {
+    "provider": "github-actions"
+  },
+  "observability": {
+    "provider": "none",
+    "healthEndpoint": null
+  }
+}

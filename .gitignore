@@ -1,0 +1,35 @@
+## .NET
+bin/
+obj/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+## Visual Studio
+.vs/
+*.rsuser
+*.csproj.user
+
+## Rider
+.idea/
+
+## Terraform
+infrastructure/.terraform/
+infrastructure/*.tfstate
+infrastructure/*.tfstate.backup
+infrastructure/*.tfplan
+infrastructure/.terraform.lock.hcl
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Build output
+publish/
