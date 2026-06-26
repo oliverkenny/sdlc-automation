@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Customer Portal Redesign", "status": "On Track", "progressPercentage": 72, "projectLead": "Alice Johnson" },
+  { "id": 2, "name": "API Migration v3", "status": "At Risk", "progressPercentage": 45, "projectLead": "David Brown" },
+  { "id": 3, "name": "Mobile App Launch", "status": "On Track", "progressPercentage": 88, "projectLead": "Bob Smith" },
+  { "id": 4, "name": "Data Pipeline Refactor", "status": "Blocked", "progressPercentage": 20, "projectLead": "Eva Martinez" }
+]
