@@ -1,0 +1,9 @@
+<div class="loading-spinner" role="status" aria-live="polite">
+    <div class="spinner-circle" aria-hidden="true"></div>
+    <span class="loading-text">@Message</span>
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "Loading...";
+}

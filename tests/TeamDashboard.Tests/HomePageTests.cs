@@ -80,4 +80,75 @@ public class HomePageTests : TestContext
         Assert.NotNull(grid);
     }
 
+    [Fact]
+    public void HomePage_ShowsLoadingStateWhileDataLoads()
+    {
+        var membersTaskSource = new TaskCompletionSource<List<TeamMember>>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var projectsTaskSource = new TaskCompletionSource<List<Project>>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        Services.AddSingleton<ITeamMemberService>(new DeferredTeamMemberService(membersTaskSource.Task));
+        Services.AddSingleton<IProjectService>(new DeferredProjectService(projectsTaskSource.Task));
+        Services.AddSingleton<IToastService>(new FakeToastService());
+
+        var cut = RenderComponent<Home>();
+
+        Assert.Equal(2, cut.FindAll(".loading-spinner").Count);
+
+        membersTaskSource.SetResult(new List<TeamMember>
+        {
+            new() { Id = 1, Name = "Alice Johnson", Role = "Tech Lead", Status = "Available" }
+        });
+        projectsTaskSource.SetResult(new List<Project>
+        {
+            new() { Id = 1, Name = "Customer Portal Redesign", Status = "On Track", ProgressPercentage = 72, ProjectLead = "Alice Johnson" }
+        });
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Single(cut.FindAll(".team-card"));
+            Assert.Single(cut.FindAll(".project-card"));
+            Assert.Empty(cut.FindAll(".loading-spinner"));
+        });
+    }
+
+    [Fact]
+    public void HomePage_ShowsErrorStateWhenTeamMembersFailToLoad()
+    {
+        Services.AddSingleton<ITeamMemberService>(new ThrowingTeamMemberService(new InvalidOperationException("We couldn't load team members right now. Please try again.")));
+        Services.AddSingleton<IProjectService>(new FakeProjectService(new List<Project>
+        {
+            new() { Id = 1, Name = "Customer Portal Redesign", Status = "On Track", ProgressPercentage = 72, ProjectLead = "Alice Johnson" }
+        }));
+        Services.AddSingleton<IToastService>(new FakeToastService());
+
+        var cut = RenderComponent<Home>();
+
+        cut.WaitForAssertion(() =>
+        {
+            var errorDisplay = cut.Find(".team-section .error-display");
+            Assert.Contains("We couldn't load team members right now. Please try again.", errorDisplay.TextContent);
+            Assert.Equal("Try Again", cut.Find(".team-section .retry-button").TextContent.Trim());
+            Assert.Single(cut.FindAll(".project-card"));
+        });
+    }
+
+    [Fact]
+    public void HomePage_ShowsTimeoutMessageWhenLoadTimesOut()
+    {
+        Services.AddSingleton<ITeamMemberService>(new ThrowingTeamMemberService(new TimeoutException("Loading team members timed out after 5 seconds. Please try again.")));
+        Services.AddSingleton<IProjectService>(new FakeProjectService(new List<Project>
+        {
+            new() { Id = 1, Name = "Customer Portal Redesign", Status = "On Track", ProgressPercentage = 72, ProjectLead = "Alice Johnson" }
+        }));
+        Services.AddSingleton<IToastService>(new FakeToastService());
+
+        var cut = RenderComponent<Home>();
+
+        cut.WaitForAssertion(() =>
+        {
+            var errorDisplay = cut.Find(".team-section .error-display-timeout");
+            Assert.Contains("Loading team members timed out after 5 seconds. Please try again.", errorDisplay.TextContent);
+            Assert.Contains("The request timed out after 5 seconds.", errorDisplay.TextContent);
+        });
+    }
 }
