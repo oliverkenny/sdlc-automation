@@ -1,21 +1,26 @@
+using System.Net.Http.Json;
 using TeamDashboard.Models;
 
 namespace TeamDashboard.Services;
 
 public interface IProjectService
 {
-    List<Project> GetAllProjects();
+    Task<List<Project>> GetAllProjectsAsync();
 }
 
 public class ProjectService : IProjectService
 {
-    private readonly List<Project> _projects = new()
-    {
-        new Project { Id = 1, Name = "Customer Portal Redesign", Status = "On Track", ProgressPercentage = 72, ProjectLead = "Alice Johnson" },
-        new Project { Id = 2, Name = "API Migration v3", Status = "At Risk", ProgressPercentage = 45, ProjectLead = "David Brown" },
-        new Project { Id = 3, Name = "Mobile App Launch", Status = "On Track", ProgressPercentage = 88, ProjectLead = "Bob Smith" },
-        new Project { Id = 4, Name = "Data Pipeline Refactor", Status = "Blocked", ProgressPercentage = 20, ProjectLead = "Eva Martinez" }
-    };
+    private readonly HttpClient _httpClient;
+    private List<Project>? _projects;
 
-    public List<Project> GetAllProjects() => _projects;
+    public ProjectService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async Task<List<Project>> GetAllProjectsAsync()
+    {
+        _projects ??= await _httpClient.GetFromJsonAsync<List<Project>>("data/projects.json") ?? new();
+        return _projects;
+    }
 }

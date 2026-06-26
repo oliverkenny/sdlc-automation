@@ -10,13 +10,21 @@
     </div>
     <div class="card-status">
         <span class="status-indicator @GetStatusClass()"></span>
-        <span class="status-text">@Member.Status</span>
+        <select class="status-select" value="@Member.Status" @onchange="OnStatusChanged">
+            <option value="Available">Available</option>
+            <option value="In Meeting">In Meeting</option>
+            <option value="Focussing">Focussing</option>
+            <option value="Away">Away</option>
+        </select>
     </div>
 </div>
 
 @code {
     [Parameter]
     public TeamMember Member { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<string> OnStatusChange { get; set; }
 
     private string GetStatusClass() => Member.Status switch
     {
@@ -26,4 +34,11 @@
         "Away" => "status-away",
         _ => "status-away"
     };
+
+    private async Task OnStatusChanged(ChangeEventArgs e)
+    {
+        var newStatus = e.Value?.ToString() ?? "Available";
+        Member.Status = newStatus;
+        await OnStatusChange.InvokeAsync(newStatus);
+    }
 }

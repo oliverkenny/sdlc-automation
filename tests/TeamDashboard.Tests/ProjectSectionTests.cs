@@ -9,11 +9,27 @@ namespace TeamDashboard.Tests;
 
 public class ProjectSectionTests : TestContext
 {
+    private void RegisterServices()
+    {
+        var members = new List<TeamMember>
+        {
+            new() { Id = 1, Name = "Alice Johnson", Role = "Tech Lead", Status = "Available" }
+        };
+        var projects = new List<Project>
+        {
+            new() { Id = 1, Name = "Customer Portal Redesign", Status = "On Track", ProgressPercentage = 72, ProjectLead = "Alice Johnson" },
+            new() { Id = 2, Name = "API Migration v3", Status = "At Risk", ProgressPercentage = 45, ProjectLead = "David Brown" },
+            new() { Id = 3, Name = "Mobile App Launch", Status = "On Track", ProgressPercentage = 88, ProjectLead = "Bob Smith" },
+            new() { Id = 4, Name = "Data Pipeline Refactor", Status = "Blocked", ProgressPercentage = 20, ProjectLead = "Eva Martinez" }
+        };
+        Services.AddSingleton<ITeamMemberService>(new FakeTeamMemberService(members));
+        Services.AddSingleton<IProjectService>(new FakeProjectService(projects));
+    }
+
     [Fact]
     public void HomePage_DisplaysProjectCards()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
-        Services.AddSingleton<IProjectService, ProjectService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -24,8 +40,7 @@ public class ProjectSectionTests : TestContext
     [Fact]
     public void HomePage_DisplaysProjectNames()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
-        Services.AddSingleton<IProjectService, ProjectService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -38,8 +53,7 @@ public class ProjectSectionTests : TestContext
     [Fact]
     public void HomePage_DisplaysProgressBars()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
-        Services.AddSingleton<IProjectService, ProjectService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -50,8 +64,7 @@ public class ProjectSectionTests : TestContext
     [Fact]
     public void HomePage_DisplaysStatusLabels()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
-        Services.AddSingleton<IProjectService, ProjectService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 
@@ -64,8 +77,7 @@ public class ProjectSectionTests : TestContext
     [Fact]
     public void HomePage_DisplaysProjectLeads()
     {
-        Services.AddSingleton<ITeamMemberService, TeamMemberService>();
-        Services.AddSingleton<IProjectService, ProjectService>();
+        RegisterServices();
 
         var cut = RenderComponent<Home>();
 

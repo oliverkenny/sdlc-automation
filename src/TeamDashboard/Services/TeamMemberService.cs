@@ -1,22 +1,36 @@
+using System.Net.Http.Json;
 using TeamDashboard.Models;
 
 namespace TeamDashboard.Services;
 
 public interface ITeamMemberService
 {
-    List<TeamMember> GetAllMembers();
+    Task<List<TeamMember>> GetAllMembersAsync();
+    void UpdateStatus(int id, string status);
 }
 
 public class TeamMemberService : ITeamMemberService
 {
-    private readonly List<TeamMember> _members = new()
-    {
-        new TeamMember { Id = 1, Name = "Alice Johnson", Role = "Tech Lead", Status = "Available" },
-        new TeamMember { Id = 2, Name = "Bob Smith", Role = "Senior Developer", Status = "In Meeting" },
-        new TeamMember { Id = 3, Name = "Carol Williams", Role = "UX Designer", Status = "Focussing" },
-        new TeamMember { Id = 4, Name = "David Brown", Role = "Backend Developer", Status = "Available" },
-        new TeamMember { Id = 5, Name = "Eva Martinez", Role = "QA Engineer", Status = "Away" }
-    };
+    private readonly HttpClient _httpClient;
+    private List<TeamMember>? _members;
 
-    public List<TeamMember> GetAllMembers() => _members;
+    public TeamMemberService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async Task<List<TeamMember>> GetAllMembersAsync()
+    {
+        _members ??= await _httpClient.GetFromJsonAsync<List<TeamMember>>("data/team-members.json") ?? new();
+        return _members;
+    }
+
+    public void UpdateStatus(int id, string status)
+    {
+        var member = _members?.FirstOrDefault(m => m.Id == id);
+        if (member is not null)
+        {
+            member.Status = status;
+        }
+    }
 }
