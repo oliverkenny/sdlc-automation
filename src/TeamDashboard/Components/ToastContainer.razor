@@ -1,0 +1,39 @@
+@implements IDisposable
+@inject IToastService ToastService
+
+<div class="toast-container" aria-live="polite" aria-atomic="false">
+    @foreach (var toast in ToastService.Toasts)
+    {
+        <div @key="toast.Id"
+             class="toast-item toast-@toast.Type @(toast.IsVisible ? "toast-visible" : "toast-hidden")"
+             role="status"
+             @onclick="() => DismissToast(toast.Id)">
+            <div class="toast-body">
+                <p class="toast-message">@toast.Message</p>
+            </div>
+            <button type="button"
+                    class="toast-dismiss"
+                    aria-label="Dismiss notification"
+                    @onclick="() => DismissToast(toast.Id)"
+                    @onclick:stopPropagation="true">
+                ×
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ToastService.OnChange += HandleToastChange;
+    }
+
+    private void DismissToast(Guid toastId) => ToastService.Dismiss(toastId);
+
+    private void HandleToastChange() => _ = InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        ToastService.OnChange -= HandleToastChange;
+    }
+}

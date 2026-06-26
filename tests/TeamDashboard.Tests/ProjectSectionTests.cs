@@ -24,6 +24,7 @@ public class ProjectSectionTests : TestContext
         };
         Services.AddSingleton<ITeamMemberService>(new FakeTeamMemberService(members));
         Services.AddSingleton<IProjectService>(new FakeProjectService(projects));
+        Services.AddSingleton<IToastService>(new FakeToastService());
     }
 
     [Fact]

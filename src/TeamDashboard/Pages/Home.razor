@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using TeamDashboard.Services
 
 <PageTitle>Team Dashboard</PageTitle>
@@ -7,22 +7,44 @@
 
 <section class="projects-section">
     <h2>Projects</h2>
-    <div class="projects-grid">
-        @foreach (var project in _projects)
-        {
-            <ProjectCard Project="@project" />
-        }
-    </div>
+    @if (_isLoadingProjects)
+    {
+        <LoadingSpinner Message="Loading projects..." />
+    }
+    else if (!string.IsNullOrWhiteSpace(_projectErrorMessage))
+    {
+        <ErrorDisplay Message="@_projectErrorMessage" IsTimeout="@_projectLoadTimedOut" OnRetry="LoadProjectsAsync" />
+    }
+    else
+    {
+        <div class="projects-grid">
+            @foreach (var project in _projects)
+            {
+                <ProjectCard Project="@project" />
+            }
+        </div>
+    }
 </section>
 
 <section class="team-section">
     <h2>Team Members</h2>
-    <div class="team-grid">
-        @foreach (var member in _members)
-        {
-            <TeamMemberCard Member="@member" OnStatusChange="@(status => OnMemberStatusChanged(member.Id, status))" />
-        }
-    </div>
+    @if (_isLoadingMembers)
+    {
+        <LoadingSpinner Message="Loading team members..." />
+    }
+    else if (!string.IsNullOrWhiteSpace(_memberErrorMessage))
+    {
+        <ErrorDisplay Message="@_memberErrorMessage" IsTimeout="@_memberLoadTimedOut" OnRetry="LoadMembersAsync" />
+    }
+    else
+    {
+        <div class="team-grid">
+            @foreach (var member in _members)
+            {
+                <TeamMemberCard Member="@member" OnStatusChange="@(status => OnMemberStatusChanged(member.Id, status))" />
+            }
+        </div>
+    }
 </section>
 
 @code {
@@ -32,17 +54,96 @@
     [Inject]
     private IProjectService ProjectService { get; set; } = default!;
 
+    [Inject]
+    private IToastService ToastService { get; set; } = default!;
+
     private List<Models.TeamMember> _members = new();
     private List<Models.Project> _projects = new();
+    private bool _isLoadingMembers = true;
+    private bool _isLoadingProjects = true;
+    private string? _memberErrorMessage;
+    private string? _projectErrorMessage;
+    private bool _memberLoadTimedOut;
+    private bool _projectLoadTimedOut;
 
     protected override async Task OnInitializedAsync()
     {
-        _members = await TeamMemberService.GetAllMembersAsync();
-        _projects = await ProjectService.GetAllProjectsAsync();
+        await Task.WhenAll(LoadProjectsAsync(), LoadMembersAsync());
+    }
+
+    private async Task LoadMembersAsync()
+    {
+        _isLoadingMembers = true;
+        _memberErrorMessage = null;
+        _memberLoadTimedOut = false;
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            _members = await TeamMemberService.GetAllMembersAsync();
+        }
+        catch (Exception ex)
+        {
+            _members = new();
+            _memberLoadTimedOut = ex is TimeoutException;
+            _memberErrorMessage = ex.Message;
+        }
+        finally
+        {
+            _isLoadingMembers = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task LoadProjectsAsync()
+    {
+        _isLoadingProjects = true;
+        _projectErrorMessage = null;
+        _projectLoadTimedOut = false;
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            _projects = await ProjectService.GetAllProjectsAsync();
+        }
+        catch (Exception ex)
+        {
+            _projects = new();
+            _projectLoadTimedOut = ex is TimeoutException;
+            _projectErrorMessage = ex.Message;
+        }
+        finally
+        {
+            _isLoadingProjects = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private void OnMemberStatusChanged(int memberId, string newStatus)
     {
+        var member = _members.FirstOrDefault(item => item.Id == memberId);
+        if (member is null)
+        {
+            return;
+        }
+
+        var oldStatus = member.Status;
+        if (string.Equals(oldStatus, newStatus, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         TeamMemberService.UpdateStatus(memberId, newStatus);
+        ToastService.Show(
+            $"{member.Name} changed status from {oldStatus} to {newStatus}",
+            GetToastType(newStatus));
     }
+
+    private static string GetToastType(string status) => status switch
+    {
+        "Available" => "success",
+        "In Meeting" or "Focussing" => "warning",
+        "Away" => "info",
+        _ => "info"
+    };
 }

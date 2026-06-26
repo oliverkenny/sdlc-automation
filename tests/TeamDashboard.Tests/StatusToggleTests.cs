@@ -24,6 +24,7 @@ public class StatusToggleTests : TestContext
         var fakeService = new FakeTeamMemberService(members);
         Services.AddSingleton<ITeamMemberService>(fakeService);
         Services.AddSingleton<IProjectService>(new FakeProjectService(projects));
+        Services.AddSingleton<IToastService>(new FakeToastService());
         return fakeService;
     }
 

@@ -38,7 +38,12 @@
     private async Task OnStatusChanged(ChangeEventArgs e)
     {
         var newStatus = e.Value?.ToString() ?? "Available";
-        Member.Status = newStatus;
+        if (string.Equals(Member.Status, newStatus, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         await OnStatusChange.InvokeAsync(newStatus);
+        Member.Status = newStatus;
     }
 }
