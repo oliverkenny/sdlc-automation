@@ -1,0 +1,37 @@
+.error-display {
+    padding: 1rem;
+    border: 1px solid #f5c2c7;
+    border-radius: 0.75rem;
+    background-color: #fff1f2;
+    color: #7f1d1d;
+}
+
+.error-display-timeout {
+    border-color: #fcd34d;
+    background-color: #fffbeb;
+    color: #92400e;
+}
+
+.error-title {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+}
+
+.error-message,
+.error-hint {
+    margin: 0 0 0.75rem;
+}
+
+.retry-button {
+    border: none;
+    border-radius: 999px;
+    background-color: #1d4ed8;
+    color: #fff;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.retry-button:hover {
+    background-color: #1e40af;
+}

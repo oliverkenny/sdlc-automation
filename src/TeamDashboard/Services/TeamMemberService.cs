@@ -13,6 +13,7 @@ public class TeamMemberService : ITeamMemberService
 {
     private readonly HttpClient _httpClient;
     private List<TeamMember>? _members;
+    private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(5);
 
     public TeamMemberService(HttpClient httpClient)
     {
@@ -21,7 +22,34 @@ public class TeamMemberService : ITeamMemberService
 
     public async Task<List<TeamMember>> GetAllMembersAsync()
     {
-        _members ??= await _httpClient.GetFromJsonAsync<List<TeamMember>>("data/team-members.json") ?? new();
+        if (_members is not null)
+        {
+            return _members;
+        }
+
+        using var cancellationTokenSource = new CancellationTokenSource(RequestTimeout);
+
+        try
+        {
+            _members = await _httpClient.GetFromJsonAsync<List<TeamMember>>("data/team-members.json", cancellationTokenSource.Token) ?? new();
+        }
+        catch (OperationCanceledException) when (cancellationTokenSource.IsCancellationRequested)
+        {
+            throw new TimeoutException("Loading team members timed out after 5 seconds. Please try again.");
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new InvalidOperationException("We couldn't load team members right now. Please try again.", ex);
+        }
+        catch (NotSupportedException ex)
+        {
+            throw new InvalidOperationException("We couldn't read the team member data. Please try again.", ex);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            throw new InvalidOperationException("We couldn't read the team member data. Please try again.", ex);
+        }
+
         return _members;
     }
 

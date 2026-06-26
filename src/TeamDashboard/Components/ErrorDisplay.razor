@@ -1,0 +1,20 @@
+<div class="error-display @(IsTimeout ? "error-display-timeout" : string.Empty)" role="alert">
+    <p class="error-title">Something went wrong</p>
+    <p class="error-message">@Message</p>
+    @if (IsTimeout)
+    {
+        <p class="error-hint">The request timed out after 5 seconds. Please check your connection and try again.</p>
+    }
+    <button type="button" class="retry-button" @onclick="OnRetry">Try Again</button>
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "Something went wrong.";
+
+    [Parameter]
+    public bool IsTimeout { get; set; }
+
+    [Parameter]
+    public EventCallback OnRetry { get; set; }
+}
