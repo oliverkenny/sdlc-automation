@@ -1,6 +1,28 @@
 ﻿@page "/"
+@using TeamDashboard.Services
 
 <PageTitle>Team Dashboard</PageTitle>
 
 <h1>Dashboard</h1>
-<p>Welcome to the Team Dashboard.</p>
+
+<section class="team-section">
+    <h2>Team Members</h2>
+    <div class="team-grid">
+        @foreach (var member in _members)
+        {
+            <TeamMemberCard Member="@member" />
+        }
+    </div>
+</section>
+
+@code {
+    [Inject]
+    private ITeamMemberService TeamMemberService { get; set; } = default!;
+
+    private List<Models.TeamMember> _members = new();
+
+    protected override void OnInitialized()
+    {
+        _members = TeamMemberService.GetAllMembers();
+    }
+}
