@@ -1,5 +1,6 @@
 .projects-section {
     margin-bottom: 2rem;
+    max-width: 100%;
 }
 
 .projects-section h2,
@@ -14,10 +15,31 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
+    width: 100%;
+    max-width: 100%;
 }
 
 .team-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+}
+
+@media (max-width: 767.98px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .projects-section h2,
+    .team-section h2 {
+        font-size: 1.1rem;
+    }
 }
